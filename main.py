@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup as bs
 
 
 def create_page_to_display(path):
+    if len(path.split(".")) > 1:
+        return
     regex = re.compile(r'(\s)(\b[а-яА-Я]{6}\b)([\s/.,:])', re.U)
     response = rget('https://habr.com' + str(path))
     open("page.html", 'w').write(response.text)
@@ -14,14 +16,15 @@ def create_page_to_display(path):
                                   "http://127.0.0.1:8000")
     new_content_2 = re.sub(regex, r'\1\2™\3', new_content)
     open("page.html", 'w').write(new_content_2)
-    # soup = bs(new_content, 'html.parser')
-    # my_div = soup.find("div", class_="post__wrapper")
-    # if my_div:
-    #     for child in my_div.descendants:
-    #         if child.string:
-    #             child.string = re.sub(regex, r'\1\2™\3', child.string)
-    #             print(child.string)
-    open("page.html", 'w').write(new_content_2)
+    soup = bs(new_content, 'html.parser')
+    my_div = soup.find("div", class_="post__wrapper")
+    if my_div:
+        for child in my_div.descendants:
+            if child.string:
+                child.string = re.sub(regex, r'\1\2™\3', child.string)
+                print(child.string)
+    print(soup)
+    open("page.html", 'w').write(str(soup))
     # with open('page.html', "w") as page_writer:
     #     for line in response.iter_lines(decode_unicode=1):
     #         # print("TYPE OF LINE %s" % type(line))
