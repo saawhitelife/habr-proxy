@@ -5,14 +5,14 @@ from requests import get as rget
 
 
 def create_page_to_display(path):
-    regex = re.compile(r'(\b[а-яА-Я]{6}\b)', re.U)
+    regex = re.compile(r'(?![^<]+>)(\b[a-zA-Z0-9а-яА-ЯёЁ]{6}\b)', re.U)
     response = rget('https://habr.com' + str(path))
     open("page.html", 'w').write(response.text)
     with open("page.html", "r") as html_reader:
         content = html_reader.read()
     html_reader.close()
     content = content.replace("https://habr.com",
-                                  "http://127.0.0.1:8000")
+                              "http://127.0.0.1:8000")
     content = re.sub(regex, r'\1™', content)
     open("page.html", 'w').write(content)
 
